@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
@@ -25,24 +26,29 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       await client.query('SELECT 1');
       client.release();
       console.log('Database connection established successfully');
-    } catch (error) {
+    } catch (error: unknown) {
       console.error('Failed to connect to database', error);
       throw error;
     }
   }
 
-  async query(text: string, params?: any[]): Promise<any> {
+  async query<T = any>(text: string, params?: any[]): Promise<{ rows: T[] }> {
     const client = await this.pool.connect();
     try {
       const result = await client.query(text, params);
-      return result;
+      return { rows: result.rows };
     } finally {
       client.release();
     }
   }
 
   async getClient(): Promise<PoolClient> {
-    return this.pool.connect();
+    try {
+      return await this.pool.connect();
+    } catch (error: unknown) {
+      console.error('Failed to acquire a database client', error);
+      throw error;
+    }
   }
 
   async transaction<T>(
@@ -54,7 +60,7 @@ export class DatabaseService implements OnModuleInit, OnModuleDestroy {
       const result = await callback(client);
       await client.query('COMMIT');
       return result;
-    } catch (error) {
+    } catch (error: unknown) {
       await client.query('ROLLBACK');
       throw error;
     } finally {

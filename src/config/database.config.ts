@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
-import { pool } from 'pg';
+import { Pool } from 'pg';
 
 export interface DatabaseConfig {
   host: string;
@@ -19,8 +19,8 @@ export const databaseConfig: DatabaseConfig = {
   ssl: process.env.DB_SSL === 'production',
 };
 
-export const CreateDatabasePool = (): pool => {
-  return new pool({
+export const CreateDatabasePool = (): Pool => {
+  return new Pool({
     host: databaseConfig.host,
     port: databaseConfig.port,
     database: databaseConfig.database,

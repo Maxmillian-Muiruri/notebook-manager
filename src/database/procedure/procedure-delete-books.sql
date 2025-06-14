@@ -4,7 +4,7 @@ RETURNS TABLE(success BOOLEAN, message TEXT, deleted_id INTEGER)
 LANGUAGE plpgsql
 AS $$
 DECLARE
-    rows_deleted INTEGER;
+    deleted_id INTEGER;
 BEGIN
     DELETE FROM notes WHERE id = p_id RETURNING id INTO deleted_id;
     IF deleted_id IS NULL THEN

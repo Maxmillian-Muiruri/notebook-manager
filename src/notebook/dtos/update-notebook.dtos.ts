@@ -1,4 +1,4 @@
-export class updatebookDto {
+export class UpdateNotebookDto {
   title: string;
   content: string;
   createdAt: Date;

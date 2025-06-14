@@ -1,26 +1,22 @@
-
-CREATE OR REPLACE FUNCTION create_books(
+CREATE OR REPLACE FUNCTION sp_create_note(
     P_title VARCHAR,
-    P_author VARCHAR,
-    P_created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
-    P_updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP 
-
+    P_content VARCHAR
 ) RETURNS TABLE (
-    id SERIAL,
+    id INTEGER,
     title VARCHAR,
-    author VARCHAR,
-    created_at TIMESTAMP WITH TIME ZONE,
-    updated_at TIMESTAMP WITH TIME ZONE
+    content VARCHAR,
+    created_at TIMESTAMP,
+    updated_at TIMESTAMP
 ) AS $$
-BEGIN 
--- check if notes  with the same title already exist
-IF EXISTS (SELECT 1 FROM notes WHERE title = P_title) THEN
-    RAISE EXCEPTION 'A note with the title "%" already exists', P_title;
-END IF;
+BEGIN
+    -- Check for duplicate title
+    IF EXISTS (SELECT 1 FROM notes n WHERE n.title = P_title) THEN
+        RAISE EXCEPTION 'A note with the title "%" already exists', P_title;
+    END IF;
 
-RETURN QUERY
-INSERT INTO notes (title, author, created_at, updated_at)
-VALUES (P_title, P_author, P_created_at, P_updated_at)  
-RETURNING id, title, author, created_at, updated_at;
+    RETURN QUERY
+    INSERT INTO notes (title, content)
+    VALUES (P_title, P_content)
+    RETURNING notes.id, notes.title, notes.content, notes.created_at, notes.updated_at;
 END;
 $$ LANGUAGE plpgsql;

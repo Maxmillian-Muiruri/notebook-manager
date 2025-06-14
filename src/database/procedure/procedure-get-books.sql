@@ -1,5 +1,4 @@
 
-
 -- FETCH ALL notes
 CREATE OR REPLACE  FUNCTION sp_get_all_notes()
 RETURNS SETOF notes AS $$

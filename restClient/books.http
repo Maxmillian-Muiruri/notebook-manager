@@ -1,0 +1,42 @@
+### Create a new note
+
+
+POST http://localhost:3000/notebook
+Content-Type: application/json
+
+{
+  "title": "My First Note",
+  "content": "This is the content of the note."
+  
+}
+### Create another note
+
+POST http://localhost:3000/notebook
+Content-Type: application/json
+
+{
+  "title": "My second Note",
+  "content": "This is the content of the note."
+  
+}
+
+### Get all notes
+GET http://localhost:3000/notebook
+
+### Get a single note by ID
+GET http://localhost:3000/notebook/2
+
+### Get a note by title
+GET http://localhost:3000/notebook/title/My First Note
+
+### Update a note by ID
+PUT http://localhost:3000/notebook/1
+Content-Type: application/json
+
+{
+  "title": "Updated Note Title",
+  "content": "Updated note content."
+}
+
+### Delete a note by ID
+DELETE http://localhost:3000/notebook/1
